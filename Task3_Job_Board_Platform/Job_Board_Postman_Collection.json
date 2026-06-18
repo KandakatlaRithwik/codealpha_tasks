@@ -1,0 +1,518 @@
+{
+  "info": {
+    "name": "Job Board Platform API",
+    "description": "Complete API collection for Job Board Platform - CodeAlpha Task 4",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000/api" },
+    { "key": "token", "value": "" },
+    { "key": "job_id", "value": "" },
+    { "key": "application_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register - Candidate",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"candidate@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"candidate\",\n  \"phone\": \"9876543210\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register - Employer",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechCorp HR\",\n  \"email\": \"employer@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"employer\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register - Admin",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Platform Admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"candidate@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/profile",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/auth/change-password",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpassword456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/logout",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs - Public",
+      "item": [
+        {
+          "name": "Get All Jobs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/jobs?page=1&limit=10",
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Jobs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/jobs/search?keyword=developer&location=Mumbai&employmentType=full-time&experienceLevel=mid&salaryMin=500000&skills=Node.js&page=1&limit=10&sort=newest",
+              "query": [
+                { "key": "keyword", "value": "developer" },
+                { "key": "location", "value": "Mumbai" },
+                { "key": "employmentType", "value": "full-time" },
+                { "key": "experienceLevel", "value": "mid" },
+                { "key": "salaryMin", "value": "500000" },
+                { "key": "skills", "value": "Node.js" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "sort", "value": "newest" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Suggestions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/jobs/suggestions?q=back",
+              "query": [{ "key": "q", "value": "back" }]
+            }
+          }
+        },
+        {
+          "name": "Get Single Job",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/jobs/{{job_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs - Employer",
+      "item": [
+        {
+          "name": "Create Job",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/jobs",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Backend Developer\",\n  \"description\": \"We are looking for an experienced Node.js backend developer to join our team.\",\n  \"requirements\": [\"3+ years Node.js\", \"MongoDB experience\", \"REST API design\"],\n  \"responsibilities\": [\"Build REST APIs\", \"Optimize database queries\", \"Code reviews\"],\n  \"location\": \"Mumbai, India\",\n  \"employmentType\": \"full-time\",\n  \"experienceLevel\": \"mid\",\n  \"salaryMin\": 800000,\n  \"salaryMax\": 1500000,\n  \"skillsRequired\": [\"Node.js\", \"Express.js\", \"MongoDB\", \"JWT\"],\n  \"applicationDeadline\": \"2025-12-31\",\n  \"category\": \"Engineering\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Job",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/jobs/{{job_id}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"salaryMax\": 1800000,\n  \"status\": \"open\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Job",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/jobs/{{job_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "My Posted Jobs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/jobs/employer/myjobs",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Employer Dashboard",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/jobs/employer/dashboard",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "View Job Applications",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/jobs/employer/{{job_id}}/applications",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Employer Profile",
+      "item": [
+        {
+          "name": "Get Employer Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/employer/profile",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Update Employer Profile",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/employer/profile",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"TechCorp India\",\n  \"companyDescription\": \"Leading tech company in India building world-class software products.\",\n  \"website\": \"https://techcorp.in\",\n  \"industry\": \"Technology\",\n  \"companySize\": \"51-200\",\n  \"location\": \"Mumbai, Maharashtra\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Upload Company Logo",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/employer/upload-logo",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "logo", "type": "file", "src": "" }]
+            }
+          }
+        },
+        {
+          "name": "Public Company Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/employer/company/{{employer_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Candidate",
+      "item": [
+        {
+          "name": "Create Candidate Profile",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/candidate/profile",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skills\": [\"Node.js\", \"Express.js\", \"MongoDB\", \"React\", \"JavaScript\"],\n  \"location\": \"Mumbai, India\",\n  \"bio\": \"Passionate backend developer with 2 years of experience.\",\n  \"linkedin\": \"https://linkedin.com/in/johndoe\",\n  \"github\": \"https://github.com/johndoe\",\n  \"education\": [{\n    \"degree\": \"B.Tech\",\n    \"institution\": \"IIT Mumbai\",\n    \"fieldOfStudy\": \"Computer Science\",\n    \"startYear\": 2019,\n    \"endYear\": 2023,\n    \"grade\": \"8.5 CGPA\"\n  }],\n  \"experience\": [{\n    \"title\": \"Backend Developer Intern\",\n    \"company\": \"Startup Inc\",\n    \"location\": \"Remote\",\n    \"startDate\": \"2022-06-01\",\n    \"endDate\": \"2022-12-01\",\n    \"description\": \"Built REST APIs using Node.js and MongoDB.\"\n  }]\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Candidate Profile",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/candidate/profile",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skills\": [\"Node.js\", \"Express.js\", \"MongoDB\", \"Redis\", \"Docker\"],\n  \"expectedSalary\": 1200000\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Candidate Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/candidate/profile",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Upload Resume (PDF)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/candidate/upload-resume",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "resume", "type": "file", "src": "" }]
+            }
+          }
+        },
+        {
+          "name": "Save Job",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/candidate/save-job/{{job_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Get Saved Jobs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/candidate/saved-jobs",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Recently Viewed Jobs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/candidate/recently-viewed",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Skill Match Score",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/candidate/skill-match/{{job_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "Apply for Job",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/applications/apply/{{job_id}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coverLetter\": \"I am excited to apply for this Backend Developer position. With my 2 years of hands-on experience with Node.js and MongoDB, I believe I am an excellent fit for this role.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "My Applications",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/applications/candidate",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Candidate Dashboard",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/applications/candidate/dashboard",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Application Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/applications/candidate/{{application_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Update Application Status (Employer)",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/applications/{{application_id}}/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"shortlisted\",\n  \"note\": \"Strong Node.js background, schedule interview.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Recruiter Note (Employer)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/applications/{{application_id}}/notes",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Great GitHub profile. Strong problem-solving skills demonstrated in interview.\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Admin Dashboard",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/admin/dashboard",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Analytics",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/admin/analytics",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "All Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/admin/users?page=1&limit=20&role=candidate",
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "role", "value": "candidate" }
+              ]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/admin/users/{{user_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Toggle User Status",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/admin/users/{{user_id}}/toggle",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "All Jobs (Admin)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/admin/jobs",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Delete Job (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/admin/jobs/{{job_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Feature/Unfeature Job",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/admin/jobs/{{job_id}}/feature",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/health"
+          }
+        }
+      ]
+    }
+  ]
+}
